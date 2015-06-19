@@ -13,10 +13,6 @@ import com.minimal.weather.entity.Province;
 public class XmlUtil {
 	public static void parseXml2Save(Context context, int id ) {
 		MinimalWeatherDB db = MinimalWeatherDB.getInstance(context);
-		
-		
-		
-		
 		try {
 			db.beginTranscation();
 			XmlResourceParser parser = context.getResources().getXml(id);
@@ -71,6 +67,8 @@ public class XmlUtil {
 				}
 				eventType = parser.next();
 			}
+			db.setTransactionSuccessful();
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally{

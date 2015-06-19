@@ -10,5 +10,13 @@ public class BaseActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		//去掉标题
 		requestWindowFeature(Window.FEATURE_NO_TITLE);  
+		ActivityCollector.addActivity(this);
+	}
+	
+	@Override
+	protected void onDestroy() {
+		ActivityCollector.removeActivity(this);
+		super.onDestroy();
+		
 	}
 }

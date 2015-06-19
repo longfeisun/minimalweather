@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
-
+    
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="50dp"
@@ -17,11 +17,21 @@
             android:textColor="@color/white"
             android:textSize="35sp" />
     </RelativeLayout>
-
-    <ListView
-        android:id="@+id/lv_choose_area"
+    
+    <RelativeLayout 
+        android:layout_weight="1"
+        android:layout_height="0dp"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
-    </ListView>
+        >
+        
+        
+        
+        
+        
+        
+        
+        
+        
+    </RelativeLayout>
 
 </LinearLayout>

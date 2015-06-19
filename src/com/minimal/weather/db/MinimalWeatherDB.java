@@ -51,9 +51,9 @@ public class MinimalWeatherDB {
 	public void insertProvince(Province province) {
 		if (province != null) {
 			ContentValues values = new ContentValues();
-			values.put("province_code", province.getProvinceCode());
-			values.put("province_name", province.getProvinceName());
-			db.insert("province", null, values);
+			values.put("PROVINCE_CODE", province.getProvinceCode());
+			values.put("PROVINCE_NAME", province.getProvinceName());
+			db.insert("PROVINCE", null, values);
 		}
 	}
 
@@ -65,10 +65,10 @@ public class MinimalWeatherDB {
 	public void insertCity(City city) {
 		if (city != null) {
 			ContentValues values = new ContentValues();
-			values.put("city_code", city.getCityCode());
-			values.put("city_name", city.getCityName());
-			values.put("province_code", city.getProvinceCode());
-			db.insert("city", null, values);
+			values.put("CITY_CODE", city.getCityCode());
+			values.put("CITY_NAME", city.getCityName());
+			values.put("PROVINCE_CODE", city.getProvinceCode());
+			db.insert("CITY", null, values);
 		}
 	}
 
@@ -80,10 +80,10 @@ public class MinimalWeatherDB {
 	public void insertDistrict(District district) {
 		if (district != null) {
 			ContentValues values = new ContentValues();
-			values.put("district_code", district.getDistrictCode());
-			values.put("district_name", district.getDistrictName());
-			values.put("city_code", district.getCityCode());
-			db.insert("district", null, values);
+			values.put("DISTRICT_CODE", district.getDistrictCode());
+			values.put("DISTRICT_NAME", district.getDistrictName());
+			values.put("CITY_NAME", district.getCityCode());
+			db.insert("DISTRICT", null, values);
 		}
 	}
 
@@ -91,16 +91,17 @@ public class MinimalWeatherDB {
 		List<Province> list = new ArrayList<Province>();
 		Province province = null;
 		Cursor cursor = db
-				.query("province", null, null, null, null, null, null);
+				.query("PROVINCE", null, null, null, null, null, null);
 
 		if (cursor.moveToFirst()) {
 			do {
 				province = new Province();
-				province.setId(cursor.getInt(cursor.getColumnIndex("id")));
+				province.setId(cursor.getInt(cursor.getColumnIndex("ID")));
 				province.setProvinceCode(cursor.getString(cursor
-						.getColumnIndex("province_code")));
+						.getColumnIndex("PROVINCE_CODE")));
 				province.setProvinceName(cursor.getString(cursor
-						.getColumnIndex("province_name")));
+						.getColumnIndex("PROVINCE_NAME")));
+				list.add(province);
 			} while (cursor.moveToNext());
 		}
 		return list;
@@ -109,18 +110,19 @@ public class MinimalWeatherDB {
 	public List<City> getCities(String provinceCode) {
 		List<City> list = new ArrayList<>();
 		City city = null;
-		Cursor cursor = db.query("city", null, "province_code=?",
+		Cursor cursor = db.query("CITY", null, "PROVINCE_CODE = ?",
 				new String[] { provinceCode }, null, null, null);
+		
 		if (cursor.moveToFirst()) {
 			do {
 				city = new City();
-				city.setId(cursor.getInt(cursor.getColumnIndex("id")));
-				city.setProvinceCode(cursor.getString(cursor
-						.getColumnIndex("province_code")));
+				city.setId(cursor.getInt(cursor.getColumnIndex("ID")));
+				city.setProvinceCode(provinceCode);
 				city.setCityName(cursor.getString(cursor
-						.getColumnIndex("city_name")));
+						.getColumnIndex("CITY_NAME")));
 				city.setCityCode(cursor.getString(cursor
-						.getColumnIndex("city_code")));
+						.getColumnIndex("CITY_CODE")));
+				list.add(city);
 			} while (cursor.moveToNext());
 		}
 
@@ -128,21 +130,21 @@ public class MinimalWeatherDB {
 
 	}
 
-	public List<District> getDistrict(String provinceCode) {
+	public List<District> getDistrict(String cityCode) {
 		List<District> list = new ArrayList<>();
 		District district = null;
-		Cursor cursor = db.query("district", null, "city_code=?",
-				new String[] { provinceCode }, null, null, null);
+		Cursor cursor = db.query("DISTRICT", null, "CITY_CODE=?",
+				new String[] { cityCode }, null, null, null);
 		if (cursor.moveToFirst()) {
 			do {
 				district = new District();
-				district.setId(cursor.getInt(cursor.getColumnIndex("id")));
+				district.setId(cursor.getInt(cursor.getColumnIndex("ID")));
 				district.setDistrictCode(cursor.getString(cursor
-						.getColumnIndex("district_code")));
+						.getColumnIndex("DISTRICT_CODE")));
 				district.setDistrictName(cursor.getString(cursor
-						.getColumnIndex("district_name")));
-				district.setCityCode(cursor.getString(cursor
-						.getColumnIndex("city_code")));
+						.getColumnIndex("DISTRICT_NAME")));
+				district.setCityCode(cityCode);
+				list.add(district);
 			} while (cursor.moveToNext());
 		}
 
@@ -152,6 +154,9 @@ public class MinimalWeatherDB {
 
 	/**
 	 * 开启事务，结束后务必关闭事务
+	 * 1、beginTranscation
+	 * 2、setTransactionSuccessful
+	 * 3、endTranscation
 	 */
 	public void beginTranscation() {
 		db.beginTransaction();
@@ -162,5 +167,9 @@ public class MinimalWeatherDB {
 	 */
 	public void endTranscation() {
 		db.endTransaction();
+	}
+	
+	public void setTransactionSuccessful(){
+		db.setTransactionSuccessful();
 	}
 }
